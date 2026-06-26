@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +26,6 @@ export const metadata: Metadata = {
     description:
       "AI创意素材平台，提供海量AI生成素材、提示词模板、灵感图库、表情包工厂、数字人视频生成、音乐生成器等功能。",
   },
-  manifest: "/manifest.json",
   themeColor: "#7c3aed",
 };
 
@@ -39,13 +37,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className={inter.className}>
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <div className="flex flex-1 flex-col">
-            <Header />
-            <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
-          </div>
-        </div>
+        <AppLayout>{children}</AppLayout>
       </body>
     </html>
   );

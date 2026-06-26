@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 import { Heart, Download, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { creativeItems } from "@/data/mock";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, cn } from "@/lib/utils";
+import { useFavorites } from "@/hooks/useFavorites";
 
-const container = {
+const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -17,12 +18,14 @@ const container = {
   },
 };
 
-const item = {
+const itemVariants = {
   hidden: { opacity: 0, scale: 0.95 },
   show: { opacity: 1, scale: 1 },
 };
 
 export function CreativeCollection() {
+  const { toggleFavorite, isFavorite } = useFavorites();
+
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
@@ -36,15 +39,15 @@ export function CreativeCollection() {
         </Link>
       </div>
       <motion.div
-        variants={container}
+        variants={containerVariants}
         initial="hidden"
         animate="show"
         className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
       >
-        {creativeItems.map((item) => (
-          <motion.div key={item.id} variants={item}>
-            <Link href={`/item/${item.id}`}>
-              <Card className="group h-full overflow-hidden">
+        {creativeItems.slice(0, 5).map((item) => (
+          <motion.div key={item.id} variants={itemVariants}>
+            <Card className="group h-full overflow-hidden">
+              <Link href={`/item/${item.id}`}>
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
                     src={item.thumbnail}
@@ -55,10 +58,25 @@ export function CreativeCollection() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <div className="absolute bottom-2 left-2 right-2 flex translate-y-2 items-center justify-between text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                     <div className="flex items-center gap-3 text-xs">
-                      <span className="flex items-center gap-1">
-                        <Heart className="h-3.5 w-3.5" />
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleFavorite(item.id);
+                        }}
+                        className={cn(
+                          "flex items-center gap-1 transition-colors",
+                          isFavorite(item.id) ? "text-rose-400" : ""
+                        )}
+                      >
+                        <Heart
+                          className={cn(
+                          "h-3.5 w-3.5",
+                          isFavorite(item.id) && "fill-current"
+                        )}
+                        />
                         {formatNumber(item.likes)}
-                      </span>
+                      </button>
                       <span className="flex items-center gap-1">
                         <Download className="h-3.5 w-3.5" />
                         {formatNumber(item.downloads)}
@@ -71,14 +89,16 @@ export function CreativeCollection() {
                     </span>
                   </div>
                 </div>
-                <div className="p-3">
+              </Link>
+              <div className="p-3">
+                <Link href={`/item/${item.id}`}>
                   <h3 className="truncate text-sm font-medium">{item.title}</h3>
                   <p className="mt-1 truncate text-xs text-muted-foreground">
                     by {item.author}
                   </p>
-                </div>
-              </Card>
-            </Link>
+                </Link>
+              </div>
+            </Card>
           </motion.div>
         ))}
       </motion.div>

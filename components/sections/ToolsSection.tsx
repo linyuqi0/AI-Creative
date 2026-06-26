@@ -24,7 +24,7 @@ const iconMap: Record<string, React.ReactNode> = {
   Music: <Music className="h-6 w-6" />,
 };
 
-const container = {
+const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -34,7 +34,7 @@ const container = {
   },
 };
 
-const item = {
+const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
 };
@@ -53,13 +53,13 @@ export function ToolsSection() {
         </Link>
       </div>
       <motion.div
-        variants={container}
+        variants={containerVariants}
         initial="hidden"
         animate="show"
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         {toolCards.map((tool, index) => (
-          <motion.div key={tool.id} variants={item}>
+          <motion.div key={tool.id} variants={itemVariants}>
             <Link href={tool.href}>
               <Card className="h-full cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <CardContent className="p-6">
